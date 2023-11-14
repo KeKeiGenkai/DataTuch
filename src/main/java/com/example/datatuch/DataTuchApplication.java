@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.sql.*;
 import java.util.Scanner;
 
-// ... (оставьте import-ы без изменений)
 
 @SpringBootApplication
 public class DataTuchApplication {
