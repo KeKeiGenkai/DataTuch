@@ -1,5 +1,6 @@
 package com.example.datatuch;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.Scanner;
 public class DataTuchApplication {
 
     public static void main(String[] args) {
+        SpringApplication.run(DataTuchApplication.class, args);
         String url = "jdbc:postgresql://localhost:5432/1613";
         String user = "postgres";
         String pass = "1488";
