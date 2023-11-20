@@ -1,18 +1,14 @@
 package com.example.datatuch;
 
-
-import org.postgresql.jdbc.PgConnection;
-import org.springframework.context.annotation.Bean;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import com.example.datatuch.AppConfig;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +16,7 @@ public class AppConfig {
 
     private static Connection connection;
 
-    public static void main(String[] args) {
+    public static void main() {
         try {
             Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/1613", "postgres", "1488");
 

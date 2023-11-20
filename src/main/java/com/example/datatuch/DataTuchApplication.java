@@ -1,5 +1,6 @@
 package com.example.datatuch;
 
+import com.example.datatuch.AppConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -75,5 +76,6 @@ public class DataTuchApplication {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        AppConfig.main();
     }
 }
