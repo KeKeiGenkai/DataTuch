@@ -15,16 +15,20 @@ import org.springframework.stereotype.Component;
 public class AppConfig {
 
     private static Connection connection;
+    public static void main(String[] args) {
+    }
 
-    public static void main() {
+    //public static void main(String[] args)
+        public static void data(){
         try {
             Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/1613", "postgres", "1488");
 
-            String jsonFilePath = "tgData/1111.json";
+            String jsonFilePath = "tgData/result.json";
 
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(new File(jsonFilePath));
             JsonNode listNode = rootNode.get("messages");
+
 
             for (JsonNode node : listNode) {
                 JsonNode dateNode = node.get("date");

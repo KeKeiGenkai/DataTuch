@@ -76,6 +76,6 @@ public class DataTuchApplication {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        AppConfig.main();
+        AppConfig.data();
     }
 }
