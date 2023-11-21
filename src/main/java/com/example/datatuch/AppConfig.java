@@ -14,11 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppConfig {
 
-    private static Connection connection;
     public static void main(String[] args) {
     }
-
-    //public static void main(String[] args)
         public static void data(){
         try {
             Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/1613", "postgres", "1488");
@@ -34,11 +31,19 @@ public class AppConfig {
                 JsonNode dateNode = node.get("date");
                 JsonNode fromNode = node.get("from");
                 JsonNode textNode = node.get("text");
+                JsonNode gameTitleNode = node.get("game_title");
+                JsonNode mediaTypeNode = node.get("media_type");
+                JsonNode photoNode = node.get("photo");
 
                 if (dateNode != null && fromNode != null && textNode != null) {
                     String date = dateNode.asText();
                     String from = fromNode.asText();
-                    String text = textNode.asText();
+                    String gameTitle = (gameTitleNode != null) ? gameTitleNode.asText() : null;
+                    String mediaType = (mediaTypeNode != null) ? mediaTypeNode.asText() : null;
+                    String photo = (photoNode != null) ? photoNode.asText() : null;
+                    String text = (mediaType != null) ? mediaType : (gameTitle != null) ? gameTitle : (photo != null) ? photo : (textNode != null && !textNode.isArray()) ? textNode.asText() : "link or answer";
+
+
 
                     String sql = "INSERT INTO telegramdata (datasend, fromusers, textmass) VALUES (?, ?, ?)";
 
@@ -62,4 +67,4 @@ public class AppConfig {
             e.printStackTrace();
         }
     }
-}
+    }

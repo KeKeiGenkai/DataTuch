@@ -33,7 +33,7 @@ public class DataTuchApplication {
 
             System.out.print("You age:");
             int age = scanner.nextInt();
-            scanner.nextLine();  //Пропускаем символ новой строки
+            scanner.nextLine();
 
             System.out.print("You country:");
             String country = scanner.nextLine();
@@ -41,7 +41,7 @@ public class DataTuchApplication {
             System.out.print("Phone number:");
             long phonenum = scanner.nextLong();
 
-// SQL-запрос с кавычками для имени таблицы
+
             String sql = "INSERT INTO \"users\" (login, password, phoneNum, age, country, name) VALUES (?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -52,7 +52,6 @@ public class DataTuchApplication {
                 preparedStatement.setString(5, country);
                 preparedStatement.setString(6, name);
 
-                // Выполнение SQL-запроса
                 int rowsAffected = preparedStatement.executeUpdate();
 
                 System.out.println("Rows affected: " + rowsAffected);
@@ -60,7 +59,6 @@ public class DataTuchApplication {
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
-                // Не забывайте закрывать ресурсы (connection, scanner) после использования
                 try {
                     if (connection != null) {
                         connection.close();
