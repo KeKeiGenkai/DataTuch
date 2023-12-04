@@ -1,7 +1,10 @@
 package com.example.datatuch;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
 
@@ -11,8 +14,10 @@ public class MyService {
     public MyService(Connection connection) {
         this.connection = connection;
     }
+
     public static void main(String[] args) {
     }
+
     public static void mostYear(Connection databaseConnection) throws IOException {
         try {
             String sqlQuery = "SELECT EXTRACT(MONTH FROM datasend) AS month, COUNT(*) AS textmess " +
@@ -40,4 +45,61 @@ public class MyService {
             e.printStackTrace();
         }
     }
+
+    public static void textFromUser(Connection databaseConnection) throws IOException {
+        try {
+            // Напишите SQL-запрос
+            String sql = "SELECT fromusers, COUNT(*) as textmass FROM public.telegramdata GROUP BY fromusers";
+
+            // Выполните запрос и получите результаты
+            try (PreparedStatement statement = databaseConnection.prepareStatement(sql);
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                // Выведите заголовок таблицы
+                System.out.printf("| %-20s | %-15s |\n", "From User", "Message Count");
+                System.out.println("|----------------------|-----------------|");
+
+                // Выведите результаты в консоль
+                while (resultSet.next()) {
+                    String fromUsers = resultSet.getString("fromusers");
+                    int textMass = resultSet.getInt("textmass");
+
+                    // Выведите строку таблицы
+                    System.out.printf("| %-20s | %-15d |\n", fromUsers, textMass);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void averageCharsPerMessage(Connection databaseConnection) throws IOException {
+        try {
+            // Напишите SQL-запрос
+            String sql = "SELECT fromusers, AVG(LENGTH(textmass)) AS avg_chars_per_message " +
+                    "FROM public.telegramdata " +
+                    "GROUP BY fromusers";
+
+            // Выполните запрос и получите результаты
+            try (PreparedStatement statement = databaseConnection.prepareStatement(sql);
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                // Выведите заголовок таблицы
+                System.out.printf("| %-20s | %-25s |\n", "From User", "Average Chars per Message");
+                System.out.println("|----------------------|---------------------------|");
+
+                // Выведите результаты в консоль
+                while (resultSet.next()) {
+                    String fromUsers = resultSet.getString("fromusers");
+                    double avgCharsPerMessage = resultSet.getDouble("avg_chars_per_message");
+
+                    // Выведите строку таблицы
+                    System.out.printf("| %-20s | %-25.2f |\n", fromUsers, avgCharsPerMessage);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

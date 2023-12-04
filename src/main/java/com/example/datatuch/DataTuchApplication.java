@@ -26,16 +26,18 @@ public class DataTuchApplication {
             while (true) {
                 System.out.println("Выберите действие:");
                 System.out.println("1. Парсинг TG даты");
-                System.out.println("2. *больше нет*");
+                System.out.println("2. *колличетво отправленных сообщений каждым пользователем*");
                 System.out.println("3. Статистика");
+                System.out.println("4. средняя длинна сообщения");
 
                 String choiceString = reader.readLine();
                 int choice = Integer.parseInt(choiceString);
 
                 switch (choice) {
                     case 1 -> AppConfig.data(databaseConnection);
-                    case 2 -> System.out.println("lol");
+                    case 2 -> MyService.textFromUser(databaseConnection);
                     case 3 -> MyService.mostYear(databaseConnection);
+                    case 4 -> MyService.averageCharsPerMessage(databaseConnection);
                     default -> System.out.println("Некорректный выбор. Пожалуйста, выберите снова.");
                 }
             }
