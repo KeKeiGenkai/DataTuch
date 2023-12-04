@@ -2,22 +2,24 @@ package com.example.datatuch;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.sql.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Component
+
 public class AppConfig {
 
     public static void main(String[] args) {
     }
-        public static void data(){
-                try {
-                    Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/1613", "postgres", "1488");
+        public static void data(Connection databaseConnection) throws IOException {
 
+
+                try {
                     String jsonFilePath = "tgData/result.json";
 
                     ObjectMapper objectMapper = new ObjectMapper();
@@ -49,7 +51,7 @@ public class AppConfig {
 
                             String sql = "INSERT INTO telegramdata (datasend, fromusers, textmass) VALUES (?, ?, ?)";
 
-                            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                                try (PreparedStatement preparedStatement = databaseConnection.prepareStatement(sql)) {
                                 preparedStatement.setTimestamp(1, timestamp);
                                 preparedStatement.setString(2, from);
                                 preparedStatement.setString(3, text);
@@ -60,8 +62,6 @@ public class AppConfig {
                             System.out.println("Некоторые узлы отсутствуют в сообщении.");
                         }
                     }
-                    connection.close();
-
                 } catch (SQLException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
