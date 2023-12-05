@@ -102,4 +102,40 @@ public class MyService {
         }
     }
 
+    public static void messagesWithTextCounts(Connection databaseConnection) throws IOException {
+        try {
+            // Напишите SQL-запрос
+            String sql = "SELECT fromusers, " +
+                    "SUM(CASE WHEN textmass = 'voice_message' THEN 1 ELSE 0 END) AS messages_with_text_1, " +
+                    "SUM(CASE WHEN textmass = 'video_message' THEN 1 ELSE 0 END) AS messages_with_text_2, " +
+                    "SUM(CASE WHEN textmass = 'sticker' THEN 1 ELSE 0 END) AS messages_with_text_3 " +
+                    "FROM public.telegramdata " +
+                    "GROUP BY fromusers";
+
+            // Выполните запрос и получите результаты
+            try (PreparedStatement statement = databaseConnection.prepareStatement(sql);
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                // Выведите заголовок таблицы
+                System.out.printf("| %-20s | %-25s | %-25s | %-25s |\n", "From User", "voice_message", "video_message", "sticker");
+                System.out.println("|----------------------|---------------------------|---------------------------|---------------------------|");
+
+                // Выведите результаты в консоль
+                while (resultSet.next()) {
+                    String fromUsers = resultSet.getString("fromusers");
+                    int messagesWithText1 = resultSet.getInt("messages_with_text_1");
+                    int messagesWithText2 = resultSet.getInt("messages_with_text_2");
+                    int messagesWithText3 = resultSet.getInt("messages_with_text_3");
+
+                    // Выведите строку таблицы
+                    System.out.printf("| %-20s | %-25d | %-25d | %-25d |\n", fromUsers, messagesWithText1, messagesWithText2, messagesWithText3);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }
