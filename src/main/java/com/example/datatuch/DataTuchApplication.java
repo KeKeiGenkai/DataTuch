@@ -6,10 +6,13 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class DataTuchApplication {
 
     private static Connection databaseConnection;
+
+    static String jsonFilePath;
 
     public static void main(String[] args) {
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/1613", "postgres", "1488")) {
@@ -31,6 +34,7 @@ public class DataTuchApplication {
                 System.out.println("4. средняя длинна сообщения");
                 System.out.println("5. количество мусора");
                 System.out.println("6. Сброс данных");
+                System.out.println("7. Путь к json");
 
                 String choiceString = reader.readLine();
                 int choice = Integer.parseInt(choiceString);
@@ -42,6 +46,7 @@ public class DataTuchApplication {
                     case 4 -> MyService.averageCharsPerMessage(databaseConnection);
                     case 5 -> MyService.messagesWithTextCounts(databaseConnection);
                     case 6 -> AppConfig.clearDatabase(databaseConnection);
+                    case 7 -> addFile();
                     default -> System.out.println("Некорректный выбор. Пожалуйста, выберите снова.");
                 }
             }
@@ -49,5 +54,10 @@ public class DataTuchApplication {
             System.err.println("Ошибка ввода-вывода: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    public static void addFile() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Введите путь к файлу:");
+        jsonFilePath = sc.nextLine();
     }
 }

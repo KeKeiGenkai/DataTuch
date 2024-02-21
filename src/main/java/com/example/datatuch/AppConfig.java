@@ -22,7 +22,7 @@ public class AppConfig {
                     createDatabase(databaseConnection);
                     createTable(databaseConnection);
 
-                    String jsonFilePath = "tgData/result.json";
+                    String jsonFilePath = DataTuchApplication.jsonFilePath;
 
                     ObjectMapper objectMapper = new ObjectMapper();
                     JsonNode rootNode = objectMapper.readTree(new File(jsonFilePath));
