@@ -30,6 +30,7 @@ public class DataTuchApplication {
                 System.out.println("3. Статистика");
                 System.out.println("4. средняя длинна сообщения");
                 System.out.println("5. количество мусора");
+                System.out.println("6. Сброс данных");
 
                 String choiceString = reader.readLine();
                 int choice = Integer.parseInt(choiceString);
@@ -40,6 +41,7 @@ public class DataTuchApplication {
                     case 3 -> MyService.mostYear(databaseConnection);
                     case 4 -> MyService.averageCharsPerMessage(databaseConnection);
                     case 5 -> MyService.messagesWithTextCounts(databaseConnection);
+                    case 6 -> AppConfig.clearDatabase(databaseConnection);
                     default -> System.out.println("Некорректный выбор. Пожалуйста, выберите снова.");
                 }
             }

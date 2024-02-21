@@ -20,25 +20,24 @@ public class MyService {
 
     public static void mostYear(Connection databaseConnection) throws IOException {
         try {
-            String sqlQuery = "SELECT EXTRACT(MONTH FROM datasend) AS month, COUNT(*) AS textmess " +
+            String sqlQuery = "SELECT EXTRACT(YEAR FROM datasend) AS year, COUNT(*) AS messageCount " +
                     "FROM telegramdata " +
-                    "WHERE EXTRACT(YEAR FROM datasend) = 2023 " +
-                    "GROUP BY EXTRACT(MONTH FROM datasend) " +
-                    "ORDER BY month";
+                    "GROUP BY EXTRACT(YEAR FROM datasend) " +
+                    "ORDER BY year";
 
             try (PreparedStatement statement = databaseConnection.prepareStatement(sqlQuery);
                  ResultSet resultSet = statement.executeQuery()) {
                 // Выводим заголовок таблицы
-                System.out.printf("| %-10s | %-15s |\n", "Month", "Message Count");
+                System.out.printf("| %-10s | %-15s |\n", "Year", "Message Count");
                 System.out.println("|------------|-----------------|");
 
                 // Выводим результаты в консоль
                 while (resultSet.next()) {
-                    int month = resultSet.getInt("month");
-                    int messageCount = resultSet.getInt("textmess");
+                    int year = resultSet.getInt("year");
+                    int messageCount = resultSet.getInt("messageCount");
 
                     // Выводим строку таблицы
-                    System.out.printf("| %-10d | %-15d |\n", month, messageCount);
+                    System.out.printf("| %-10d | %-15d |\n", year, messageCount);
                 }
             }
         } catch (SQLException e) {
