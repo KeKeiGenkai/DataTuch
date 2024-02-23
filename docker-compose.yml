@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  app:
+    image: openjdk:21-jdk
+    volumes:
+      - ./out/artifacts/DataTuch_jar:/app
+    command: java -jar /app/DataTuch.jar
+    depends_on:
+      - postgres
+
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: my_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1488
