@@ -2,6 +2,7 @@ package com.example.datatuch;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,55 +15,47 @@ public class AppConfig {
 
     public static void main(String[] args) {
     }
-    public static void data(Connection databaseConnection) throws IOException {
+    public static void data(MultipartFile file, Connection databaseConnection) throws IOException {
         try {
-
             createDatabase(databaseConnection);
             createTable(databaseConnection);
 
-            String jsonFilePath = DataTuchApplication.jsonFilePath;
-            if (jsonFilePath != null) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(new File(jsonFilePath));
-                JsonNode listNode = rootNode.get("messages");
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(file.getInputStream());
+            JsonNode listNode = rootNode.get("messages");
 
+            for (JsonNode node : listNode) {
+                JsonNode dateNode = node.get("date");
+                JsonNode fromNode = node.get("from");
+                JsonNode textNode = node.get("text");
+                JsonNode gameTitleNode = node.get("game_title");
+                JsonNode mediaTypeNode = node.get("media_type");
+                JsonNode photoNode = node.get("photo");
 
-                for (JsonNode node : listNode) {
-                    JsonNode dateNode = node.get("date");
-                    JsonNode fromNode = node.get("from");
-                    JsonNode textNode = node.get("text");
-                    JsonNode gameTitleNode = node.get("game_title");
-                    JsonNode mediaTypeNode = node.get("media_type");
-                    JsonNode photoNode = node.get("photo");
+                if (dateNode != null && fromNode != null && textNode != null) {
+                    String date = dateNode.asText();
+                    String from = fromNode.asText();
+                    String gameTitle = (gameTitleNode != null) ? gameTitleNode.asText() : null;
+                    String mediaType = (mediaTypeNode != null) ? mediaTypeNode.asText() : null;
+                    String photo = (photoNode != null) ? photoNode.asText() : null;
+                    String text = (mediaType != null) ? mediaType : (gameTitle != null) ? gameTitle : (photo != null) ? photo : (textNode != null && !textNode.isArray()) ? textNode.asText() : "link or answer";
 
-                    if (dateNode != null && fromNode != null && textNode != null) {
-                        String date = dateNode.asText();
-                        String from = fromNode.asText();
-                        String gameTitle = (gameTitleNode != null) ? gameTitleNode.asText() : null;
-                        String mediaType = (mediaTypeNode != null) ? mediaTypeNode.asText() : null;
-                        String photo = (photoNode != null) ? photoNode.asText() : null;
-                        String text = (mediaType != null) ? mediaType : (gameTitle != null) ? gameTitle : (photo != null) ? photo : (textNode != null && !textNode.isArray()) ? textNode.asText() : "link or answer";
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                    LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+                    Timestamp timestamp = Timestamp.valueOf(dateTime);
 
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-                        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-                        java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(dateTime);
+                    String sql = "INSERT INTO telegramdata (datasend, fromusers, textmass) VALUES (?, ?, ?)";
 
+                    try (PreparedStatement preparedStatement = databaseConnection.prepareStatement(sql)) {
+                        preparedStatement.setTimestamp(1, timestamp);
+                        preparedStatement.setString(2, from);
+                        preparedStatement.setString(3, text);
 
-                        String sql = "INSERT INTO telegramdata (datasend, fromusers, textmass) VALUES (?, ?, ?)";
-
-                        try (PreparedStatement preparedStatement = databaseConnection.prepareStatement(sql)) {
-                            preparedStatement.setTimestamp(1, timestamp);
-                            preparedStatement.setString(2, from);
-                            preparedStatement.setString(3, text);
-
-                            preparedStatement.executeUpdate();
-                        }
-                    } else {
-                        System.out.println("Некоторые узлы отсутствуют в сообщении.");
+                        preparedStatement.executeUpdate();
                     }
+                } else {
+                    System.out.println("Некоторые узлы отсутствуют в сообщении.");
                 }
-            } else {
-                System.out.println("Путь к JSON файлу не указан");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,14 +77,6 @@ public class AppConfig {
 
     public static void clearDatabase(Connection databaseConnection) {
         try {
-            // Выполняем SQL-запрос для удаления всех записей из таблицы
-            /*String clearTableQuery = "DELETE FROM telegramdata";
-            try (PreparedStatement statement = databaseConnection.prepareStatement(clearTableQuery)) {
-                statement.executeUpdate();
-            }*/
-
-            // Опционально, если вы хотите очистить также и саму таблицу, раскомментируйте следующий код:
-
             String clearTableQuery = "TRUNCATE TABLE telegramdata";
             try (PreparedStatement statement = databaseConnection.prepareStatement(clearTableQuery)) {
                 statement.executeUpdate();
