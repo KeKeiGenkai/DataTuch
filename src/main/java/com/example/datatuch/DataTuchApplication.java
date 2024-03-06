@@ -6,14 +6,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static com.example.datatuch.AppConfig.data;
-
 public class DataTuchApplication {
 
     static Connection databaseConnection;
 
 
     public static void main(String[] args) throws IOException {
+        connectToDatabase();
         // Параметры подключения к PostgreSQL
 
         /*String url = "jdbc:postgresql://localhost:5432/";
@@ -81,10 +80,10 @@ public class DataTuchApplication {
         }
     }
 
-    public static void cleanup() {
+    public static void cleanup(Connection databaseConnection) {
         try {
-            if (databaseConnection != null && !databaseConnection.isClosed()) {
-                databaseConnection.close();
+            if (DataTuchApplication.databaseConnection != null && !DataTuchApplication.databaseConnection.isClosed()) {
+                DataTuchApplication.databaseConnection.close();
             }
 
             // Удаляем базу данных tgdata

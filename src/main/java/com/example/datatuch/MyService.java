@@ -47,6 +47,8 @@ public class MyService {
 
     public static void textFromUser(Connection databaseConnection) throws IOException {
         try {
+
+
             // Напишите SQL-запрос
             String sql = "SELECT fromusers, COUNT(*) as textmass FROM public.telegramdata GROUP BY fromusers";
 
