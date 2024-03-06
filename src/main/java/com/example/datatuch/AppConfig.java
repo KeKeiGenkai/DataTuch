@@ -17,7 +17,7 @@ public class AppConfig {
     }
     public static void data(MultipartFile file, Connection databaseConnection) throws IOException {
         try {
-            createDatabase(databaseConnection);
+            //createDatabase(databaseConnection);
             createTable(databaseConnection);
 
             ObjectMapper objectMapper = new ObjectMapper();
@@ -63,7 +63,7 @@ public class AppConfig {
             e.printStackTrace();
         }
     }
-    private static void createDatabase(Connection connection) throws SQLException {
+    /*private static void createDatabase(Connection connection) throws SQLException {
         // Создание базы данных, если она ещё не существует
         Statement statement = connection.createStatement();
         // Заменяем IF NOT EXISTS на условие проверки существования базы данных
@@ -73,7 +73,7 @@ public class AppConfig {
         }
         resultSet.close();
         statement.close();
-    }
+    }*/
 
     public static void clearDatabase(Connection databaseConnection) {
         try {
