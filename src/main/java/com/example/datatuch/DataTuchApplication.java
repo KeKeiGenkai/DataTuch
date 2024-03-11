@@ -13,38 +13,6 @@ public class DataTuchApplication {
 
     public static void main(String[] args) throws IOException {
         connectToDatabase();
-        // Параметры подключения к PostgreSQL
-
-        /*String url = "jdbc:postgresql://localhost:5432/";
-        String user = "postgres";
-        String password = "1488";
-
-        // Параметры новой базы данных
-        String dbName = "tgdata";
-        String dbUser = "postgres";
-        String dbPassword = "1488";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password)) {
-            // Создание базы данных
-            try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("CREATE DATABASE " + dbName);
-            }
-
-            System.out.println("База данных успешно создана.");
-
-            // Подключение к созданной базе данных
-            String dbUrl = url + dbName;
-            try (Connection dbConnection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-                System.out.println("Успешное подключение к базе данных.");
-
-            } catch (SQLException e) {
-                System.err.println("Ошибка при подключении к базе данных: " + e.getMessage());
-                e.printStackTrace();
-            }
-        } catch (SQLException e) {
-            System.err.println("Ошибка при создании базы данных: " + e.getMessage());
-            e.printStackTrace();
-        }*/
     }
 
     public static void connectToDatabase() {

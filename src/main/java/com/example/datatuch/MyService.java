@@ -5,7 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class MyService {
@@ -18,7 +21,10 @@ public class MyService {
     public static void main(String[] args) {
     }
 
-    public static void mostYear(Connection databaseConnection) throws IOException {
+
+    public static Map<String, Object> mostYear(Connection databaseConnection) {
+        Map<String, Object> result = new LinkedHashMap<>();
+
         try {
             String sqlQuery = "SELECT EXTRACT(YEAR FROM datasend) AS year, COUNT(*) AS messageCount " +
                     "FROM telegramdata " +
@@ -27,85 +33,71 @@ public class MyService {
 
             try (PreparedStatement statement = databaseConnection.prepareStatement(sqlQuery);
                  ResultSet resultSet = statement.executeQuery()) {
-                // Выводим заголовок таблицы
-                System.out.printf("| %-10s | %-15s |\n", "Year", "Message Count");
-                System.out.println("|------------|-----------------|");
 
-                // Выводим результаты в консоль
+                Map<String, Integer> yearMessageCountMap = new LinkedHashMap<>();
                 while (resultSet.next()) {
                     int year = resultSet.getInt("year");
                     int messageCount = resultSet.getInt("messageCount");
 
-                    // Выводим строку таблицы
-                    System.out.printf("| %-10d | %-15d |\n", year, messageCount);
+                    yearMessageCountMap.put(String.valueOf(year), messageCount);
                 }
+
+                result.put("mostyear", yearMessageCountMap);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return result;
     }
 
-    public static void textFromUser(Connection databaseConnection) throws IOException {
+    public static Map<String, Integer> textFromUser(Connection databaseConnection) throws IOException {
+        Map<String, Integer> result = new LinkedHashMap<>();
+
         try {
+            String sql = "SELECT fromusers, COUNT(*) AS textmass FROM public.telegramdata GROUP BY fromusers";
 
-
-            // Напишите SQL-запрос
-            String sql = "SELECT fromusers, COUNT(*) as textmass FROM public.telegramdata GROUP BY fromusers";
-
-            // Выполните запрос и получите результаты
             try (PreparedStatement statement = databaseConnection.prepareStatement(sql);
                  ResultSet resultSet = statement.executeQuery()) {
-
-                // Выведите заголовок таблицы
-                System.out.printf("| %-20s | %-15s |\n", "From User", "Message Count");
-                System.out.println("|----------------------|-----------------|");
-
-                // Выведите результаты в консоль
                 while (resultSet.next()) {
                     String fromUsers = resultSet.getString("fromusers");
                     int textMass = resultSet.getInt("textmass");
-
-                    // Выведите строку таблицы
-                    System.out.printf("| %-20s | %-15d |\n", fromUsers, textMass);
+                    result.put(fromUsers, textMass); // Добавляем имя пользователя и количество сообщений в Map
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return result;
     }
 
-    public static void averageCharsPerMessage(Connection databaseConnection) throws IOException {
+    public static List<Map<String, Object>> averageCharsPerMessage(Connection databaseConnection) throws IOException {
+        List<Map<String, Object>> result = new ArrayList<>();
+
         try {
-            // Напишите SQL-запрос
             String sql = "SELECT fromusers, AVG(LENGTH(textmass)) AS avg_chars_per_message " +
                     "FROM public.telegramdata " +
                     "GROUP BY fromusers";
 
-            // Выполните запрос и получите результаты
             try (PreparedStatement statement = databaseConnection.prepareStatement(sql);
                  ResultSet resultSet = statement.executeQuery()) {
-
-                // Выведите заголовок таблицы
-                System.out.printf("| %-20s | %-25s |\n", "From User", "Average Chars per Message");
-                System.out.println("|----------------------|---------------------------|");
-
-                // Выведите результаты в консоль
+                // Добавляем среднее количество символов на сообщение для каждого пользователя в список
                 while (resultSet.next()) {
-                    String fromUsers = resultSet.getString("fromusers");
-                    double avgCharsPerMessage = resultSet.getDouble("avg_chars_per_message");
-
-                    // Выведите строку таблицы
-                    System.out.printf("| %-20s | %-25.2f |\n", fromUsers, avgCharsPerMessage);
+                    Map<String, Object> user = new LinkedHashMap<>();
+                    user.put("fromUser", resultSet.getString("fromusers"));
+                    user.put("averageCharsPerMessage", resultSet.getDouble("avg_chars_per_message"));
+                    result.add(user);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return result;
     }
 
-    public static void messagesWithTextCounts(Connection databaseConnection) throws IOException {
+    public static List<Map<String, Object>> messagesWithTextCounts(Connection databaseConnection) throws IOException {
+        List<Map<String, Object>> result = new ArrayList<>();
+
         try {
-            // Напишите SQL-запрос
             String sql = "SELECT fromusers, " +
                     "SUM(CASE WHEN textmass = 'voice_message' THEN 1 ELSE 0 END) AS messages_with_text_1, " +
                     "SUM(CASE WHEN textmass = 'video_message' THEN 1 ELSE 0 END) AS messages_with_text_2, " +
@@ -113,30 +105,23 @@ public class MyService {
                     "FROM public.telegramdata " +
                     "GROUP BY fromusers";
 
-            // Выполните запрос и получите результаты
             try (PreparedStatement statement = databaseConnection.prepareStatement(sql);
                  ResultSet resultSet = statement.executeQuery()) {
-
-                // Выведите заголовок таблицы
-                System.out.printf("| %-20s | %-25s | %-25s | %-25s |\n", "From User", "voice_message", "video_message", "sticker");
-                System.out.println("|----------------------|---------------------------|---------------------------|---------------------------|");
-
-                // Выведите результаты в консоль
+                // Добавляем количество сообщений каждого типа для каждого пользователя в список
                 while (resultSet.next()) {
-                    String fromUsers = resultSet.getString("fromusers");
-                    int messagesWithText1 = resultSet.getInt("messages_with_text_1");
-                    int messagesWithText2 = resultSet.getInt("messages_with_text_2");
-                    int messagesWithText3 = resultSet.getInt("messages_with_text_3");
-
-                    // Выведите строку таблицы
-                    System.out.printf("| %-20s | %-25d | %-25d | %-25d |\n", fromUsers, messagesWithText1, messagesWithText2, messagesWithText3);
+                    Map<String, Object> user = new LinkedHashMap<>();
+                    user.put("fromUser", resultSet.getString("fromusers"));
+                    user.put("voice_message", resultSet.getInt("messages_with_text_1"));
+                    user.put("video_message", resultSet.getInt("messages_with_text_2"));
+                    user.put("sticker", resultSet.getInt("messages_with_text_3"));
+                    result.add(user);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return result;
     }
-
 
 
 }
