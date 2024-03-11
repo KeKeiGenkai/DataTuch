@@ -63,17 +63,6 @@ public class AppConfig {
             e.printStackTrace();
         }
     }
-    /*private static void createDatabase(Connection connection) throws SQLException {
-        // Создание базы данных, если она ещё не существует
-        Statement statement = connection.createStatement();
-        // Заменяем IF NOT EXISTS на условие проверки существования базы данных
-        ResultSet resultSet = statement.executeQuery("SELECT 1 FROM pg_database WHERE datname='your_database_name'");
-        if (!resultSet.next()) {
-            statement.executeUpdate("CREATE DATABASE your_database_name");
-        }
-        resultSet.close();
-        statement.close();
-    }*/
 
     public static void clearDatabase(Connection databaseConnection) {
         try {
