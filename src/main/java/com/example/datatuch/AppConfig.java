@@ -56,12 +56,14 @@ public class AppConfig {
                 } else {
                     System.out.println("Некоторые узлы отсутствуют в сообщении.");
                 }
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("fin");
     }
 
     public static void clearDatabase(Connection databaseConnection) {
