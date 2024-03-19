@@ -32,6 +32,7 @@ public class ApiController {
     public ResponseEntity<Map<String, Object>> getData() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Allow-Origin", "http://localhost:8080");
+        
 
         try {
             Connection databaseConnection = DataTuchApplication.databaseConnection;
