@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -17,7 +16,6 @@ public class AppConfig {
     }
     public static void data(MultipartFile file, Connection databaseConnection) throws IOException {
         try {
-            //createDatabase(databaseConnection);
             createTable(databaseConnection);
 
             ObjectMapper objectMapper = new ObjectMapper();

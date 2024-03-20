@@ -1,7 +1,6 @@
 package com.example.datatuch;
 
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,13 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Arrays;
 import java.util.Map;
 
 import static com.example.datatuch.DataTuchApplication.databaseConnection;
@@ -27,34 +23,30 @@ import static com.example.datatuch.DataTuchApplication.databaseConnection;
 @RestController
 public class ApiController {
 
-    @CrossOrigin(origins = "http://localhost:8080")
+    @CrossOrigin(origins = "*")
     @PostMapping("/getData")
     public ResponseEntity<Map<String, Object>> getData() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost:8080");
-        
-
         try {
             Connection databaseConnection = DataTuchApplication.databaseConnection;
             Map<String, Object> data = new LinkedHashMap<>();
-            // Получаем данные из всех методов и добавляем их в общую Map
+            // Получаем данные из методов и добавляем их в общую Map
             data.put("mostyear", MyService.mostYear(databaseConnection));
             data.put("textusers", MyService.textFromUser(databaseConnection));
             data.put("averageCharsPerMessage", MyService.averageCharsPerMessage(databaseConnection));
             data.put("messagesWithTextCounts", MyService.messagesWithTextCounts(databaseConnection));
 
-            return ResponseEntity.ok().headers(headers).body(data);
+            return ResponseEntity.ok(data);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {
-            // Обработка загруженного файла
             AppConfig.data(file, DataTuchApplication.databaseConnection);
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,5 +76,4 @@ public class ApiController {
             return "Ошибка при завершении программы: " + e.getMessage();
         }
     }
-
 }
