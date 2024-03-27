@@ -5,15 +5,22 @@ services:
     image: openjdk:21-jdk
     volumes:
       - ./src/main/java/com/example/datatuch:/app
-    command: sh -c "while ! nc -z database 5432; do sleep 1; done && java -jar /app/DataTuch.jar"
+    command: sh -c "apt-get update && apt-get install -y netcat && while ! nc -z database 5432; do sleep 1; done && java -jar /app/DataTuch.jar"
     depends_on:
       - postgres
+    ports:
+      - "9090:8080" # Изменяем порт на 9090
+    links:
+      - postgres:database
+
   backend:
     build: .
     ports:
       - "8080:8080"
     depends_on:
       - postgres
+    links:
+      - postgres:database
 
   postgres:
     image: postgres:latest

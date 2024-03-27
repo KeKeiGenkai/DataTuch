@@ -16,7 +16,8 @@ public class DataTuchApplication {
     }
 
     public static void connectToDatabase() {
-        String url = "jdbc:postgresql://localhost:5432/";
+        String url = "jdbc:postgresql://postgres:5432/my_database";
+
         String user = "postgres";
         String password = "1488";
 
@@ -55,7 +56,7 @@ public class DataTuchApplication {
             }
 
             // Удаляем базу данных tgdata
-            String url = "jdbc:postgresql://localhost:5432/";
+            String url = "jdbc:postgresql://postgres:5432/my_database";
             String user = "postgres";
             String password = "1488";
             String dbName = "tgdata";
